@@ -45,7 +45,7 @@ def get_default_parameters():
     return params
 
 
-def load_data(train_path='.//data//regression.train', test_path='.//data//regression.test'):
+def load_data(train_path='~/data/regression.train', test_path='.~/data/regression.test'):
     '''
     Load or create dataset
     '''
