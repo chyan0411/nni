@@ -6,8 +6,10 @@ import math
 import tempfile
 import time
 
-import tensorflow as tf
-from tensorflow.examples.tutorials.mnist import input_data
+import tensorflow as tf 
+# from tensorflow.examples.tutorials.mnist import input_data 
+(train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.mnist.load_data()
+
 
 import nni
 
