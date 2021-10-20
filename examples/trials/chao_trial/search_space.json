@@ -1,7 +1,6 @@
 {
-    "C": {"_type":"uniform","_value":[0.1, 1]},
-    "kernel": {"_type":"choice","_value":["linear", "rbf", "poly", "sigmoid"]},
-    "degree": {"_type":"choice","_value":[1, 2, 3, 4]},
-    "gamma": {"_type":"uniform","_value":[0.01, 0.1]},
-    "coef0": {"_type":"uniform","_value":[0.01, 0.1]}
+    "learning_rate": {"_type":"uniform","_value":[0.01, 0.2]},
+    "max_depth": {"_type":"choice","_value":[3,4,5,6]},
+    "subsample": {"_type":"uniform","_value":[0.5, 1]},
+    "colsample_btree": {"_type":"uniform", "_value":[0.5, 1]}
 }

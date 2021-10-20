@@ -39,71 +39,81 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import RepeatedStratifiedKFold
 from sklearn import metrics
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+dimport pandas as pd
+import nni
+from sklearn.model_selection import cross_val_score
+import xgboost as xgb
+from sklearn.model_selection import KFold
+import pickle
+
+# get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-LOG = logging.getLogger('sklearn_classification')
-
-def load_data():
-    '''Load dataset, use 20newsgroups dataset'''
-
-    FILE_PATH = 'Verdika_remove_unnecessary_done_v2.csv'
-    data = pd.read_csv(FILE_PATH)
+# LOG = logging.getLogger('sklearn_classification')
 
 
-    X = data.drop(['Swapped'], axis = 1)
-    y = data.Swapped
+
+
+
+
+
 
     # digits = load_digits()
-    X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=99, test_size=0.2)
+    
 
-    ss = StandardScaler()
-    X_train = ss.fit_transform(X_train)
-    X_test = ss.transform(X_test)
 
-    return X_train, X_test, y_train, y_test
+FILE_PATH = 'Verdika_remove_unnecessary_done_v2.csv'
+data = pd.read_csv(FILE_PATH)
 
+X = data.drop(['Swapped'], axis = 1)
+y = data.Swapped
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=99, test_size=0.2) 
+
+# x_train = pickle.load(open("./data/x_train", 'rb'))
+# x_test = pickle.load(open("./data/x_test", 'rb'))
+
+# test = pd.read_csv("./data/test.csv")
+# train = pd.read_csv("./data/train.csv")
+
+# passengerId = test['PassengerId']
+# y_train = train['Survived'].ravel()
+
+# 获取默认参数
 def get_default_parameters():
-    '''get default parameters'''
-    params = {
-        'C': 1.0,
-        'kernel': 'linear',
-        'degree': 3,
-        'gamma': 0.01,
-        'coef0': 0.01
-    }
-    return params
+     params = {
+          'learning_rate': 0.02,
+          'n_estimators': 2000,
+          'max_depth': 4,
+          'min_child_weight':2,
+          'gamma':0.9,
+          'subsample':0.8,
+          'colsample_bytree':0.8,
+          'objective':'binary:logistic',
+          'nthread':-1,
+          'scale_pos_weight':1
+     }
+     return params
 
+# 获取模型
 def get_model(PARAMS):
-    '''Get model according to parameters'''
-    model = SVC()
-    model.C = PARAMS.get('C')
-    model.kernel = PARAMS.get('kernel')
-    model.degree = PARAMS.get('degree')
-    model.gamma = PARAMS.get('gamma')
-    model.coef0 = PARAMS.get('coef0')
+     model = xgb.XGBClassifier()
+     model.learning_rate = PARAMS.get("learning_rate")
+     model.max_depth = PARAMS.get("max_depth")
+     model.subsample = PARAMS.get("subsample")
+     model.colsample_btree = PARAMS.get("colsample_btree")
+     return model
 
-    return model
-
-def run(X_train, X_test, y_train, y_test, model):
-    '''Train model and predict result'''
-    model.fit(X_train, y_train)
-    score = model.score(X_test, y_test)
-    LOG.debug('score: %s', score)
-    nni.report_final_result(score)
+# 运行模型
+kf = KFold(n_splits=5)
+def run(x_train, y_train, model):
+     scores = cross_val_score(model, x_train, y_train, cv=kf)
+     score = scores.mean()
+     nni.report_final_result(score)
 
 if __name__ == '__main__':
-    X_train, X_test, y_train, y_test = load_data()
-
-    try:
-        # get parameters from tuner
-        RECEIVED_PARAMS = nni.get_next_parameter()
-        LOG.debug(RECEIVED_PARAMS)
-        PARAMS = get_default_parameters()
-        PARAMS.update(RECEIVED_PARAMS)
-        LOG.debug(PARAMS)
-        model = get_model(PARAMS)
-        run(X_train, X_test, y_train, y_test, model)
-    except Exception as exception:
-        LOG.exception(exception)
-        raise
+     RECEIVED_PARAMS = nni.get_next_parameter()
+     PARAMS = get_default_parameters()
+     PARAMS.update(RECEIVED_PARAMS)
+     model = get_model(PARAMS)
+     run(x_train, y_train, model)
