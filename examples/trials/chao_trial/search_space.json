@@ -1,6 +1,5 @@
 {
-    "learning_rate": {"_type":"uniform","_value":[0.01, 0.2]},
-    "max_depth": {"_type":"choice","_value":[3,4,5,6]},
-    "subsample": {"_type":"uniform","_value":[0.5, 1]},
-    "colsample_btree": {"_type":"uniform", "_value":[0.5, 1]}
+    "n_estimators": {"_type":"choice","_value":[100, 200, 300]},
+    "learning_rate": {"_type":"choice","_value":[0.0001, 0.0005, 0.001]},
+    "max_depth": {"_type":"choice","_value":[3,4,5,6]}
 }

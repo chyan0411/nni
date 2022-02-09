@@ -2,11 +2,13 @@
 # Use "nnictl create --config config.yml" to launch this experiment.
 # Afterwards, you can check "config_detailed.yml" for more explanation.
 
+
+
 authorName: default
-experimentName: Chao_trial
+experimentName: chao_trial2
 trialConcurrency: 1
-maxExecDuration: 1h
-maxTrialNum: 100
+maxExecDuration: 2h
+maxTrialNum: 200
 #choice: local, remote
 trainingServicePlatform: local
 searchSpacePath: search_space.json
@@ -19,6 +21,8 @@ tuner:
     #choice: maximize, minimize
     optimize_mode: maximize
 trial:
-  command: python3 main.py
+  command: python SK_Manual1.py
+  # command: python3 main1.py
+  # command: python3 main1.py
   codeDir: .
   gpuNum: 0

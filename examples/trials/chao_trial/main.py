@@ -48,17 +48,6 @@ import pickle
 
 # get_ipython().run_line_magic('matplotlib', 'inline')
 
-
-# LOG = logging.getLogger('sklearn_classification')
-
-
-
-
-
-
-
-
-    # digits = load_digits()
     
 
 
